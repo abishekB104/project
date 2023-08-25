@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Miniproject</title>
+  <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+  <div class="quiz-container">
+    <h1>KCE Quiz App</h1>
+    <div id="question-container">
+      <p id="question-text"></p>
+      <div id="answer-buttons"></div>
+    </div>
+    <div id="controls-container">
+      <button id="start-button">Start Quiz</button>
+      <button class="btn" onclick="prev()">prev</button>
+<button class="btn" onclick="next()">next</button>
+      <div id="timer-container">
+        <span id="timer-text">Time Left: <span id="timer">0</span></span>
+      </div>
+    </div>
+  </div>
+  <script>
+    const quizQuestions =  [
+    {
+    question: 'What is the non primitive data type?',
+    options: ['Object','Bigint','Symbol','String'],
+    correctAnswer: 'Object',
+    },
+    {
+    question: 'What is the first version of JS?',
+    options: ['ES4','ES3','ES1','EMASCRIPT4'],
+    correctAnswer: 'ES1',
+    },
+    {
+    question: 'Who is the Father of JS?',
+    options: ['James Gosling','Brendan Eich','Dennis Ritchie','Bjarne Stroustrup'],
+    correctAnswer: 'Brendan Eich',
+    },
+    {
+    question: 'Which year the JS is created?',
+    options: ['1993', '1985', '1995', '1990'],
+    correctAnswer: '1995',
+    },
+    {
+    question: 'Symbol to declare a Exponentation?',
+    options: [
+    '++',
+    '*',
+    '%',
+    '**',
+    ],
+    correctAnswer: '**',
+    },
+    ];
+ 
+  let currentQuestionIndex = 0;
+  let score = 0;
+  let timeLeft = 60;
+  let timerInterval;
+  
+ 
+  function startQuiz() {
+    document.getElementById("start-button").style.display = "none";
+    displayQuestion();
+    startTimer();
+  }
+  function displayQuestion() {
+    const currentQuestion = quizQuestions[currentQuestionIndex];
+    const questionText = document.getElementById("question-text");
+    const answerButtons = document.getElementById("answer-buttons");
+    questionText.innerHTML = "";
+    answerButtons.innerHTML = "";
+    questionText.innerHTML = currentQuestion.question;
+    currentQuestion.options.forEach(option => {
+      const button = document.createElement("button");
+      button.innerText = option;
+      button.classList.add("answer-button");
+      answerButtons.appendChild(button);
+      button.addEventListener("click", function() {
+        checkAnswer(option);
+      });
+    });
+  }
+  function checkAnswer(selectedOption) {
+    const currentQuestion = quizQuestions[currentQuestionIndex];
+    if (selectedOption === currentQuestion.correctAnswer) {
+      score++;
+    }
+    currentQuestionIndex++;
+  
+    if (currentQuestionIndex < quizQuestions.length) {
+      displayQuestion();
+    } else {
+      endQuiz();
+    }
+  }
+  function startTimer() {
+    timerInterval = setInterval(function() {
+      timeLeft--;
+      document.getElementById("timer").textContent = timeLeft;
+      if (timeLeft <= 0) {
+        endQuiz();
+      }
+    }, 1000);
+  }
+  function endQuiz() {
+    clearInterval(timerInterval);
+    const scorePercentage = (score / quizQuestions.length) * 100;
+    const questionContainer = document.getElementById("question-container");
+    questionContainer.innerHTML = `
+      <h2>Quiz Completed!</h2>
+      <p>Your Score: ${score} out of ${quizQuestions.length}</p>
+      <p>Score Percentage: ${scorePercentage}%</p>`;
+  }
+  document.getElementById("start-button").addEventListener("click", startQuiz);
+  </script>
+</body>
+</html>
